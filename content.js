@@ -253,11 +253,14 @@ class ClearlyAccessibility {
   applyOkabeItoColors() {
     const colorMapping = this.getColorMapping(this.colorBlindnessType);
     
-    // Apply to all elements with background colors
-    this.transformElementColors(document.body, colorMapping);
+    // Apply comprehensive color transformation
+    this.transformAllColors(document.body, colorMapping);
     
     // Apply to CSS custom properties
     this.transformCSSVariables(colorMapping);
+    
+    // Add global CSS overrides
+    this.addGlobalColorOverrides(colorMapping);
   }
 
   removeOkabeItoColors() {
@@ -271,38 +274,72 @@ class ClearlyAccessibility {
       }
     });
     
+    // Remove border color transformations
+    const borderElements = document.querySelectorAll('[data-clearly-original-border]');
+    borderElements.forEach(element => {
+      const originalColor = element.getAttribute('data-clearly-original-border');
+      if (originalColor) {
+        element.style.borderColor = originalColor;
+        element.removeAttribute('data-clearly-original-border');
+      }
+    });
+    
     // Remove CSS variable transformations
     const style = document.getElementById('clearly-okabe-ito-styles');
     if (style) {
       style.remove();
     }
+    
+    // Remove global overrides
+    const globalStyle = document.getElementById('clearly-global-overrides');
+    if (globalStyle) {
+      globalStyle.remove();
+    }
   }
 
-  transformElementColors(element, colorMapping) {
-    // Transform background colors
-    if (element.style.backgroundColor) {
-      const originalColor = element.style.backgroundColor;
-      const transformedColor = this.getClosestColor(originalColor, colorMapping);
-      if (transformedColor && transformedColor !== originalColor) {
-        element.setAttribute('data-clearly-original-color', originalColor);
+  transformAllColors(element, colorMapping) {
+    // Get computed styles for more comprehensive transformation
+    const computedStyle = window.getComputedStyle(element);
+    
+    // Transform background colors (both inline and computed)
+    const bgColor = element.style.backgroundColor || computedStyle.backgroundColor;
+    if (bgColor && bgColor !== 'transparent' && bgColor !== 'rgba(0, 0, 0, 0)') {
+      const transformedColor = this.getClosestColor(bgColor, colorMapping);
+      if (transformedColor && transformedColor !== bgColor) {
+        element.setAttribute('data-clearly-original-color', bgColor);
         element.style.backgroundColor = transformedColor;
       }
     }
     
     // Transform border colors
-    if (element.style.borderColor) {
-      const originalColor = element.style.borderColor;
-      const transformedColor = this.getClosestColor(originalColor, colorMapping);
-      if (transformedColor && transformedColor !== originalColor) {
-        element.setAttribute('data-clearly-original-border', originalColor);
+    const borderColor = element.style.borderColor || computedStyle.borderColor;
+    if (borderColor && borderColor !== 'transparent') {
+      const transformedColor = this.getClosestColor(borderColor, colorMapping);
+      if (transformedColor && transformedColor !== borderColor) {
+        element.setAttribute('data-clearly-original-border', borderColor);
         element.style.borderColor = transformedColor;
+      }
+    }
+    
+    // Transform text colors for better contrast
+    const textColor = element.style.color || computedStyle.color;
+    if (textColor && textColor !== 'rgb(0, 0, 0)' && textColor !== 'rgb(255, 255, 255)') {
+      const transformedColor = this.getClosestColor(textColor, colorMapping);
+      if (transformedColor && transformedColor !== textColor) {
+        element.setAttribute('data-clearly-original-text', textColor);
+        element.style.color = transformedColor;
       }
     }
     
     // Recursively apply to children
     Array.from(element.children).forEach(child => {
-      this.transformElementColors(child, colorMapping);
+      this.transformAllColors(child, colorMapping);
     });
+  }
+
+  transformElementColors(element, colorMapping) {
+    // Legacy method - now calls the comprehensive version
+    this.transformAllColors(element, colorMapping);
   }
 
   transformCSSVariables(colorMapping) {
@@ -336,6 +373,77 @@ class ClearlyAccessibility {
     style.textContent = css;
   }
 
+  addGlobalColorOverrides(colorMapping) {
+    // Create global CSS overrides for common color patterns
+    let globalStyle = document.getElementById('clearly-global-overrides');
+    if (!globalStyle) {
+      globalStyle = document.createElement('style');
+      globalStyle.id = 'clearly-global-overrides';
+      document.head.appendChild(globalStyle);
+    }
+    
+    const palette = this.getOkabeItoPalette();
+    const css = `
+      /* Global color overrides for common patterns */
+      * {
+        transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease !important;
+      }
+      
+      /* Override common background colors */
+      [style*="background-color: red"],
+      [style*="background-color: #ff0000"],
+      [style*="background-color: #f00"] {
+        background-color: ${palette.vermillion} !important;
+      }
+      
+      [style*="background-color: green"],
+      [style*="background-color: #00ff00"],
+      [style*="background-color: #0f0"] {
+        background-color: ${palette.bluishGreen} !important;
+      }
+      
+      [style*="background-color: blue"],
+      [style*="background-color: #0000ff"],
+      [style*="background-color: #00f"] {
+        background-color: ${palette.blue} !important;
+      }
+      
+      [style*="background-color: yellow"],
+      [style*="background-color: #ffff00"],
+      [style*="background-color: #ff0"] {
+        background-color: ${palette.yellow} !important;
+      }
+      
+      [style*="background-color: orange"],
+      [style*="background-color: #ffa500"] {
+        background-color: ${palette.orange} !important;
+      }
+      
+      [style*="background-color: purple"],
+      [style*="background-color: #800080"] {
+        background-color: ${palette.reddishPurple} !important;
+      }
+      
+      /* Override text colors for better contrast */
+      [style*="color: red"],
+      [style*="color: #ff0000"] {
+        color: ${palette.vermillion} !important;
+      }
+      
+      [style*="color: green"],
+      [style*="color: #00ff00"] {
+        color: ${palette.bluishGreen} !important;
+      }
+      
+      [style*="color: blue"],
+      [style*="color: #0000ff"] {
+        color: ${palette.blue} !important;
+      }
+    `;
+    
+    globalStyle.textContent = css;
+  }
+
   getClosestColor(color, colorMapping) {
     // Convert color to hex format for comparison
     const hexColor = this.colorToHex(color);
@@ -366,7 +474,7 @@ class ClearlyAccessibility {
     
     // Handle hex colors
     if (color.startsWith('#')) {
-      return color;
+      return color.toUpperCase();
     }
     
     // Handle rgb/rgba colors
@@ -380,7 +488,18 @@ class ClearlyAccessibility {
       }
     }
     
-    // Handle named colors (basic mapping)
+    // Handle hsl/hsla colors
+    if (color.startsWith('hsl')) {
+      const hsl = color.match(/\d+/g);
+      if (hsl && hsl.length >= 3) {
+        const h = parseInt(hsl[0]);
+        const s = parseInt(hsl[1]);
+        const l = parseInt(hsl[2]);
+        return this.hslToHex(h, s, l);
+      }
+    }
+    
+    // Handle named colors (extended mapping)
     const namedColors = {
       'red': '#FF0000',
       'green': '#00FF00',
@@ -393,10 +512,54 @@ class ClearlyAccessibility {
       'gray': '#808080',
       'grey': '#808080',
       'black': '#000000',
-      'white': '#FFFFFF'
+      'white': '#FFFFFF',
+      'cyan': '#00FFFF',
+      'magenta': '#FF00FF',
+      'lime': '#00FF00',
+      'navy': '#000080',
+      'teal': '#008080',
+      'olive': '#808000',
+      'maroon': '#800000',
+      'silver': '#C0C0C0',
+      'aqua': '#00FFFF',
+      'fuchsia': '#FF00FF'
     };
     
     return namedColors[color.toLowerCase()] || null;
+  }
+
+  hslToHex(h, s, l) {
+    h = h / 360;
+    s = s / 100;
+    l = l / 100;
+    
+    const hue2rgb = (p, q, t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1/6) return p + (q - p) * 6 * t;
+      if (t < 1/2) return q;
+      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      return p;
+    };
+    
+    let r, g, b;
+    
+    if (s === 0) {
+      r = g = b = l; // achromatic
+    } else {
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1/3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1/3);
+    }
+    
+    const toHex = (c) => {
+      const hex = Math.round(c * 255).toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    };
+    
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
   }
 
   colorDistance(color1, color2) {
