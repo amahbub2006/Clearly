@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clearly - Accessibility Enhancement</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <div class="logo">
+        <div class="logo-icon">C</div>
+        <h1>Clearly</h1>
+      </div>
+      <div class="status-indicator" id="statusIndicator">
+        <div class="status-dot"></div>
+        <span id="statusText">Inactive</span>
+      </div>
+    </header>
+
+    <main class="popup-main">
+      <section class="accessibility-controls">
+        <div class="control-group">
+          <label class="toggle-container">
+            <input type="checkbox" id="accessibilityToggle" class="toggle-input">
+            <span class="toggle-slider"></span>
+            <span class="toggle-label">Enable Accessibility Features</span>
+          </label>
+        </div>
+
+        <div class="control-group" id="colorBlindnessGroup">
+          <label for="colorBlindnessSelect" class="control-label">Color Blindness Type</label>
+          <select id="colorBlindnessSelect" class="select-input">
+            <option value="protanopia">Protanopia (Red-blind)</option>
+            <option value="deuteranopia">Deuteranopia (Green-blind)</option>
+            <option value="tritanopia">Tritanopia (Blue-blind)</option>
+            <option value="achromatopsia">Achromatopsia (Complete color blindness)</option>
+            <option value="enhanced">Enhanced Vision</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <button id="previewBtn" class="preview-button">
+            <span class="button-icon">👁️</span>
+            Preview Changes
+          </button>
+        </div>
+      </section>
+
+      <section class="quick-actions">
+        <h3>Quick Actions</h3>
+        <div class="action-buttons">
+          <button id="resetBtn" class="action-button secondary">
+            <span class="button-icon">🔄</span>
+            Reset Page
+          </button>
+          <button id="settingsBtn" class="action-button secondary">
+            <span class="button-icon">⚙️</span>
+            Settings
+          </button>
+        </div>
+      </section>
+
+      <section class="info-section">
+        <div class="info-card">
+          <div class="info-icon">ℹ️</div>
+          <div class="info-content">
+            <h4>About Clearly</h4>
+            <p>AI-powered accessibility enhancement that adapts web content to your unique needs in real-time.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="popup-footer">
+      <div class="version-info">
+        <span>Version 1.0.0</span>
+        <span class="separator">•</span>
+        <a href="#" id="helpLink">Help</a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+/* Clearly Content CSS - Accessibility Enhancements */
+
+/* Enhanced focus indicators for better accessibility */
+.clearly-enhanced-focus {
+  outline: 3px solid #667eea !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+}
+
+/* Improved contrast for text elements */
+.clearly-enhanced-text {
+  filter: contrast(1.2) brightness(1.05) !important;
+}
+
+/* Color blindness simulation filters */
+.clearly-protanopia {
+  filter: sepia(1) saturate(1.5) hue-rotate(320deg) contrast(1.2) !important;
+}
+
+.clearly-deuteranopia {
+  filter: sepia(1) saturate(1.5) hue-rotate(50deg) contrast(1.2) !important;
+}
+
+.clearly-tritanopia {
+  filter: sepia(1) saturate(1.5) hue-rotate(180deg) contrast(1.2) !important;
+}
+
+.clearly-achromatopsia {
+  filter: grayscale(1) contrast(1.2) brightness(1.1) !important;
+}
+
+.clearly-enhanced {
+  filter: contrast(1.2) brightness(1.1) saturate(1.3) !important;
+}
+
+/* Smooth transitions for all accessibility changes */
+img, video, canvas {
+  transition: filter 0.3s ease, contrast 0.3s ease, brightness 0.3s ease !important;
+}
+
+/* High contrast mode for better readability */
+.clearly-high-contrast {
+  filter: contrast(1.5) brightness(1.2) !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Reduced motion for users with vestibular disorders */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus management for keyboard navigation */
+.clearly-focus-trap {
+  position: relative;
+}
+
+.clearly-focus-trap::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid #667eea;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 1000;
+}
