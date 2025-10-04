@@ -162,6 +162,20 @@ body {
   border-color: #667eea;
 }
 
+.palette-info {
+  margin-top: 6px;
+  color: #6b7280;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.palette-info small {
+  color: #667eea;
+  font-weight: 500;
+}
+
 .preview-button {
   width: 100%;
   padding: 12px 16px;

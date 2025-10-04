@@ -4,9 +4,11 @@ Clearly is an AI-powered browser extension that transforms how users experience 
 
 ## Features
 
-- **Color Blindness Accessibility**: Automatically adjusts images and content for various types of color blindness
+- **Okabe-Ito Color Palette**: Uses scientifically-proven colorblind-friendly colors that work for all types of color vision
+- **Color Blindness Accessibility**: Automatically transforms colors and images for various types of color blindness
 - **Real-time Adaptation**: Changes are applied instantly without page reload
 - **Multiple Color Blindness Types**: Support for protanopia, deuteranopia, tritanopia, achromatopsia, and enhanced vision
+- **Smart Color Mapping**: Intelligently maps colors to the most appropriate Okabe-Ito alternatives
 - **Easy-to-use Interface**: Simple popup interface for quick access to settings
 - **Manifest V3 Compatible**: Built with the latest Chrome extension standards
 
@@ -34,9 +36,23 @@ Clearly is an AI-powered browser extension that transforms how users experience 
 
 Clearly works by:
 1. Injecting a content script into web pages
-2. Applying CSS filters to images based on the selected color blindness type
-3. Using advanced color transformation algorithms to make content more accessible
-4. Providing real-time feedback through visual indicators
+2. **Transforming colors using the Okabe-Ito palette** - scientifically proven colors that work for all types of color vision
+3. Applying CSS filters to images based on the selected color blindness type
+4. Using smart color mapping algorithms to find the closest Okabe-Ito alternative
+5. Providing real-time feedback through visual indicators
+
+### 🎨 Okabe-Ito Color Palette
+
+The extension uses the renowned Okabe-Ito color palette, which includes:
+- **Orange** (#E69F00) - High contrast, works for all color vision types
+- **Sky Blue** (#56B4E9) - Distinct from other blues
+- **Bluish Green** (#009E73) - Easily distinguishable from pure green
+- **Yellow** (#F0E442) - High visibility
+- **Blue** (#0072B2) - Classic, accessible blue
+- **Vermillion** (#D55E00) - Red alternative that works for colorblind users
+- **Reddish Purple** (#CC79A7) - Purple that's distinguishable from blue
+
+This palette was specifically designed by researchers to be accessible to people with various types of color vision deficiency.
 
 ## Technical Details
 
